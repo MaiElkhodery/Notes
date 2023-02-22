@@ -27,12 +27,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewFragm
     private long noteId;
     int positionOfLastItem;
     public static final String RECYCLER_FRAG_TAG = "recyclerview";
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         initDatabase();
         viewNotes();
     }
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewFragm
     //to add a new note
     @Override
     public void onAddButtonClick() {
+
         NoteFragment noteFragment = NoteFragment.newInstance(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,noteFragment)

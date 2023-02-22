@@ -1,9 +1,14 @@
 package com.example.notes;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -19,6 +24,8 @@ import com.example.notes.databinding.FragmentNoteBinding;
 import com.example.notes.databinding.NoteToolbarBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class NoteFragment extends Fragment {
 
     private FragmentNoteBinding binding;
@@ -26,9 +33,13 @@ public class NoteFragment extends Fragment {
     private static SetNoteFragmentListener listener;
     String title;
     String description;
-    ImageView backIcon;
-    ImageView changeBackground;
-    ImageView settingsIcon;
+    AppCompatImageButton backIcon;
+    AppCompatImageButton changeBackgroundIcon;
+    AppCompatImageButton settingsIcon;
+    AppCompatImageButton saveIcon;
+    View fragmentNoteRoot;
+    View toolbarNoteRoot;
+    int defaultColor;
 
     public static NoteFragment newInstance(SetNoteFragmentListener clickListener) {
         listener=clickListener;
@@ -55,19 +66,9 @@ public class NoteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FloatingActionButton saveButton = binding.saveButton;
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                title = binding.titleEditText.getText().toString();
-                description = binding.descriptionEditText.getText().toString();
-                Log.d("info",title+" - "+description);
-                if(title != null && description != null) {
-                    listener.onSaveButtonClick(title, description);
-                }
-            }
-        });
         onClickBack();
+        onClickColorPicker();
+        onClickSave();
     }
     public interface SetNoteFragmentListener{
         void onSaveButtonClick(String title,String description);
@@ -79,7 +80,52 @@ public class NoteFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack(MainActivity.RECYCLER_FRAG_TAG,0);
+            }
+        });
+    }
+    public void onClickColorPicker(){
+
+        changeBackgroundIcon=toolbarBinding.backgroundIcon;
+        changeBackgroundIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("color","change color clicked");
+                fragmentNoteRoot = binding.getRoot();
+                toolbarNoteRoot = binding.getRoot();
+                defaultColor = 0;
+                openColorPicker();
+            }
+        });
+    }
+    public void openColorPicker(){
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(getContext(), defaultColor,
+                new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                defaultColor=color;
+                fragmentNoteRoot.setBackgroundColor(color);
+                toolbarNoteRoot.setBackgroundColor(color);
+            }
+        });
+        colorPicker.show();
+    }
+    public void onClickSave(){
+        saveIcon = toolbarBinding.saveNoteIcon;
+        saveIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                title = binding.titleEditText.getText().toString();
+                description = binding.descriptionEditText.getText().toString();
+                Log.d("info",title+" - "+description);
+                if(title != null && description != null) {
+                    listener.onSaveButtonClick(title, description);
+                }
             }
         });
     }
