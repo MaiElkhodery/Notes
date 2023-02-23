@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.example.notes.databinding.FragmentNoteBinding;
 import com.example.notes.databinding.NoteToolbarBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Date;
+
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class NoteFragment extends Fragment {
@@ -33,17 +36,46 @@ public class NoteFragment extends Fragment {
     private static SetNoteFragmentListener listener;
     String title;
     String description;
+    int background;
     AppCompatImageButton backIcon;
     AppCompatImageButton changeBackgroundIcon;
     AppCompatImageButton settingsIcon;
     AppCompatImageButton saveIcon;
+    EditText title_editText;
+    EditText description_editText;
     View fragmentNoteRoot;
     View toolbarNoteRoot;
     int defaultColor;
 
+
+    private static final String NOTE_TITLE ="title";
+    private static final String NOTE_DATE ="date";
+    private static final String NOTE_DESCRIPTION ="description";
+    private static final String NOTE_BACKGROUND ="background";
+
+    private String noteTitle;
+    private String noteDescription;
+    private Date noteDate;
+    private int noteBackground;
+
+    public interface SetNoteFragmentListener{
+        void onSaveButtonClick(String title, int background,String description);
+    }
+
     public static NoteFragment newInstance(SetNoteFragmentListener clickListener) {
         listener=clickListener;
         NoteFragment fragment = new NoteFragment();
+        return fragment;
+    }
+    public static NoteFragment openFragment(SetNoteFragmentListener clickListener,
+                                            String titleParams,int backgroundParams, String descriptionParams ) {
+        listener=clickListener;
+        Bundle bundle = new Bundle();
+        bundle.putInt(NOTE_BACKGROUND,backgroundParams);
+        bundle.putString(NOTE_TITLE,titleParams);
+        bundle.putString(NOTE_DESCRIPTION,descriptionParams);
+        NoteFragment fragment = new NoteFragment();
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -51,6 +83,9 @@ public class NoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            noteTitle=getArguments().getString(NOTE_TITLE);
+            noteDescription=getArguments().getString(NOTE_DESCRIPTION);
+            noteBackground=getArguments().getInt(NOTE_BACKGROUND);
         }
     }
 
@@ -59,7 +94,14 @@ public class NoteFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentNoteBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
-        toolbarBinding = NoteToolbarBinding.inflate(inflater,container,false);
+        toolbarBinding = binding.noteToolbar;
+        if(getArguments() != null){
+            title_editText = binding.titleEditText;
+            title_editText.setText(noteTitle);
+            description_editText=binding.descriptionEditText;
+            description_editText.setText(noteDescription);
+            view.setBackgroundColor(noteBackground);
+        }
         return view;
     }
 
@@ -70,17 +112,17 @@ public class NoteFragment extends Fragment {
         onClickColorPicker();
         onClickSave();
     }
-    public interface SetNoteFragmentListener{
-        void onSaveButtonClick(String title,String description);
-    }
+
     public void onClickBack(){
-        Log.d("back","onclickBack");
         backIcon = toolbarBinding.backIcon;
         backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                getActivity().getSupportFragmentManager().popBackStack(MainActivity.RECYCLER_FRAG_TAG,0);
+                Log.d("back","onclickBack");
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer,RecyclerviewFragment.newInstance())
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }
@@ -124,7 +166,7 @@ public class NoteFragment extends Fragment {
                 description = binding.descriptionEditText.getText().toString();
                 Log.d("info",title+" - "+description);
                 if(title != null && description != null) {
-                    listener.onSaveButtonClick(title, description);
+                    listener.onSaveButtonClick(title, background, description);
                 }
             }
         });

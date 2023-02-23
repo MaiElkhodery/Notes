@@ -17,6 +17,7 @@ public abstract class Database extends RoomDatabase {
                 //if statement prevents repeating of creating the database multiple times when rotating
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context, Database.class, "NotesDatabase")
+                            .allowMainThreadQueries()
                             .build();
                 }
             }

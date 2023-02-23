@@ -19,8 +19,8 @@ public interface DAO {
     void deleteNote(Note note);
     @Query("DELETE FROM Note")
     void deleteAllNotes();
-    @Query("UPDATE Note SET title =:title,description=:description WHERE id =:id ")
-    void update(long id, String title, String description);
+    @Query("UPDATE Note SET title =:title,description=:description, background =:background WHERE id =:id ")
+    void update(long id, String title, String description,int background);
     @Query("SELECT * FROM Note where id = :id")
     Note getNote(long id);
 }
