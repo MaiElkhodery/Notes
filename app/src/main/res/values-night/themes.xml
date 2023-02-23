@@ -13,4 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="nightModeBackground">
+        <item name="backgroundTint">#BB040404</item>
+    </style>
+    <style name="nightModeText">
+        <item name="android:textColor">#FFFF</item>
+    </style>
+    <style name="lightModeToolbar">
+        <item name="backgroundTint">#FFFF</item>
+    </style>
 </resources>

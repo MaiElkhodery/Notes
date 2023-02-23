@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RecyclerviewFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/lightModeBackground">
 
   <include
       android:id="@+id/mainToolbar"
       layout="@layout/main_toolbar"
+      style="@style/lightModeToolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintEnd_toEndOf="parent"
@@ -23,6 +25,7 @@
       android:id="@+id/notes_recyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      style="@style/lightModeText"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -33,6 +36,7 @@
       android:id="@+id/addButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      style="@style/lightModeText"
       android:layout_marginEnd="52dp"
       android:layout_marginBottom="52dp"
       android:src="@drawable/add"

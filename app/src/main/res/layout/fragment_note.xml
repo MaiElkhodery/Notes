@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NoteFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/lightModeBackground">
 
 
     <include
@@ -13,6 +14,7 @@
         layout="@layout/note_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/lightModeToolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,9 +32,10 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:hint="Title"
+        style="@style/lightModeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noteToolbar" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/description_editText"
@@ -44,6 +47,7 @@
         android:inputType="textMultiLine"
         android:paddingStart="8dp"
         android:textSize="16sp"
+        style="@style/lightModeText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -9,11 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.notes.Database.Database;
 import com.example.notes.Database.Note;
@@ -27,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class RecyclerviewFragment extends Fragment implements NotesAdapter.ItemClickListener, NoteFragment.SetNoteFragmentListener {
+public class RecyclerviewFragment extends Fragment implements SettingsFragment.SetSettingsListener, NotesAdapter.ItemClickListener, NoteFragment.SetNoteFragmentListener{
 
     public static ArrayList<Note> dataList=new ArrayList<>();
     RecyclerView recyclerView;
@@ -50,7 +52,6 @@ public class RecyclerviewFragment extends Fragment implements NotesAdapter.ItemC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         fragmentBinding = FragmentRecyclerviewBinding.inflate(inflater,container,false);
         View view = fragmentBinding.getRoot();
         toolbarBinding = fragmentBinding.mainToolbar;
@@ -69,13 +70,10 @@ public class RecyclerviewFragment extends Fragment implements NotesAdapter.ItemC
                 addNote();
             }
         });
+        onClickSettings();
     }
 
     public void initRecyclerView(View view){
-        dataList.add(new Note("Soft Skills",5689,"rrrrrrr"));
-        dataList.add(new Note("Soft Skills",5689,"rrrrrrr"));
-        dataList.add(new Note("Soft Skills",5689,"rrrrrrr"));
-        dataList.add(new Note("Soft Skills",5689,"rrrrrrr"));
         recyclerView= view.findViewById(R.id.notes_recyclerView);
         adapter=new NotesAdapter(dataList,this);
         recyclerView.setAdapter(adapter);
@@ -108,7 +106,6 @@ public class RecyclerviewFragment extends Fragment implements NotesAdapter.ItemC
                 note_id = newNoteAdded.getId();
             }
         });
-        //updateList();
     }
     //open note
     @Override
@@ -125,6 +122,26 @@ public class RecyclerviewFragment extends Fragment implements NotesAdapter.ItemC
     @Override
     public void onSaveButtonClick(String title, int background, String description) {
         database.Dao().update(note_id,title,description,background);
-        //updateList();
+    }
+
+
+    public void onClickSettings(){
+        ImageView settingIcon = toolbarBinding.settingsIcon;
+        settingIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SettingsFragment settingsFragment = SettingsFragment.newInstance(RecyclerviewFragment.this);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer,settingsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+    }
+
+    @Override
+    public void onClickChangeView() {
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
     }
 }
