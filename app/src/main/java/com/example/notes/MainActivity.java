@@ -1,21 +1,14 @@
 package com.example.notes;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
-
-import android.os.Bundle;
-import android.util.Log;
 
 import com.example.notes.Database.Database;
-import com.example.notes.Database.Note;
+import com.example.notes.databinding.FragmentRecyclerviewBinding;
+import com.example.notes.databinding.MainToolbarBinding;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initDatabase();
         viewNotes();
     }

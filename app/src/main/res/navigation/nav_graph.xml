@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_recyclerviewFragment_to_noteFragment"
             app:destination="@id/noteFragment" />
+        <action
+            android:id="@+id/action_recyclerviewFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/noteFragment"
@@ -22,4 +25,9 @@
             android:id="@+id/action_noteFragment_to_recyclerviewFragment"
             app:destination="@id/recyclerviewFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.notes.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

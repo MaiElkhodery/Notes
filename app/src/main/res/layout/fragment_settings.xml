@@ -1,51 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsFragment">
+    tools:context=".SettingsFragment"
+    style="@style/lightModeBackground"
+    android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/nightModeTextView"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/mainToolbar"
+        layout="@layout/settings_toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="100dp"
-        android:text="Night Mode"
-        android:textColor="#090909"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchMode"
-        android:layout_width="95dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="100dp"
-        android:text="off"
-        app:layout_constraintStart_toEndOf="@+id/nightModeTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/LinearViewTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="108dp"
-        android:text="Linear View"
-        android:textColor="#090909"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nightModeTextView" />
+        <TextView
+            android:id="@+id/nightModeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="46dp"
+            android:text="Night Mode"
+            android:textColor="#090909"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchMode2"
-        android:layout_width="95dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="93dp"
-        android:text="off"
-        app:layout_constraintStart_toEndOf="@+id/LinearViewTextView"
-        app:layout_constraintTop_toBottomOf="@+id/switchMode" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchMode"
+            style="@style/lightModeText"
+            android:layout_width="95dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="148dp"
+            android:layout_marginTop="44dp"
+            android:text="off"
+            app:layout_constraintStart_toEndOf="@+id/nightModeTextView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/LinearViewTextView"
+            style="@style/lightModeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            android:text="GridView"
+            android:textColor="#090909"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nightModeTextView" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchMode2"
+            style="@style/lightModeText"
+            android:layout_width="95dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="40dp"
+            android:text="off"
+            app:layout_constraintStart_toEndOf="@+id/LinearViewTextView"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode" />
+
+        <TextView
+            android:id="@+id/ArabicLangTextView"
+            style="@style/lightModeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            android:text="Arabic"
+            android:textColor="#090909"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/LinearViewTextView" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchMode3"
+            style="@style/lightModeText"
+            android:layout_width="95dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="53dp"
+            android:text="off"
+            app:layout_constraintStart_toEndOf="@+id/LinearViewTextView"
+            app:layout_constraintTop_toBottomOf="@+id/switchMode2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

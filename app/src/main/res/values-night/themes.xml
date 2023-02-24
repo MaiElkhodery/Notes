@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Notes" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Notes" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -14,12 +14,12 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="nightModeBackground">
-        <item name="backgroundTint">#BB040404</item>
+        <item name="backgroundTint">#BB000000</item>
     </style>
     <style name="nightModeText">
         <item name="android:textColor">#FFFF</item>
     </style>
     <style name="lightModeToolbar">
-        <item name="backgroundTint">#FFFF</item>
+        <item name="backgroundTint">#BB000000</item>
     </style>
 </resources>

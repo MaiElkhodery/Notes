@@ -1,21 +1,20 @@
 package com.example.notes;
 
-import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.example.notes.Database.Database;
 import com.example.notes.Database.Note;
@@ -24,7 +23,6 @@ import com.example.notes.databinding.MainToolbarBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +33,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     RecyclerView recyclerView;
     public static NotesAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    private FragmentRecyclerviewBinding fragmentBinding;
+    public static FragmentRecyclerviewBinding fragmentBinding;
     private MainToolbarBinding toolbarBinding;
     Database database ;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -71,6 +69,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
             }
         });
         onClickSettings();
+        deleteNote();
     }
 
     public void initRecyclerView(View view){
@@ -93,37 +92,41 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     }
     //add new note
     public void addNote(){
-        NoteFragment noteFragment = NoteFragment.newInstance(this);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer,noteFragment)
-                .addToBackStack(null)
-                .commit();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
                 newNoteAdded = new Note();
                 database.Dao().addNote(newNoteAdded);
                 note_id = newNoteAdded.getId();
+                Log.d("getId_newNote","ID : "+note_id);
             }
         });
+        NoteFragment noteFragment = NoteFragment.newInstance(this);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer,noteFragment)
+                .addToBackStack(null)
+                .commit();
     }
     //open note
     @Override
     public void onNoteClick(Note note) {
+        note_id = note.getId();
+        Log.d("getId_onNoteClick","ID : "+note_id);
         NoteFragment noteFragment = NoteFragment.openFragment(this,note.getTitle(),
                 note.getBackground(),note.getDescription());
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,noteFragment)
                 .addToBackStack(null)
                 .commit();
-        note_id = note.getId();
     }
 
     @Override
     public void onSaveButtonClick(String title, int background, String description) {
-        database.Dao().update(note_id,title,description,background);
+        Note note = new Note(title,background,description);
+        note.setId(note_id);
+        database.Dao().addNote(note);
+        Log.d("getId_onSave","ID : "+note_id);
     }
-
 
     public void onClickSettings(){
         ImageView settingIcon = toolbarBinding.settingsIcon;
@@ -140,8 +143,33 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     }
 
     @Override
-    public void onClickChangeView() {
+    public void changeLayoutToLinear() {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+    }
+    @Override
+    public void changeLayoutToGrid() {
+        layoutManager = new GridLayoutManager(getContext(),2);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    public void deleteNote(){
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        database.Dao()
+                                .deleteNote(adapter.getNote(viewHolder.getAdapterPosition()));
+                    }
+                });
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 }

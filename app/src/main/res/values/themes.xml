@@ -15,10 +15,10 @@
     </style>
 
     <style name="lightModeBackground">
-        <item name="backgroundTint">#FFFF</item>
+        <item name="backgroundTint">#B2B5B5</item>
     </style>
     <style name="lightModeText">
-        <item name="android:textColor">#BB040404</item>
+        <item name="android:textColor">#BB000000</item>
     </style>
     <style name="lightModeToolbar">
         <item name="backgroundTint">#FFFF</item>

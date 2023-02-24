@@ -11,12 +11,8 @@
   <include
       android:id="@+id/mainToolbar"
       layout="@layout/main_toolbar"
-      style="@style/lightModeToolbar"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_height="wrap_content" />
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent">
@@ -40,7 +36,7 @@
       android:layout_marginEnd="52dp"
       android:layout_marginBottom="52dp"
       android:src="@drawable/add"
-      android:backgroundTint="#CC1F1F"
+      android:backgroundTint="#94B2CC"
       android:contentDescription="adding contacts button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
