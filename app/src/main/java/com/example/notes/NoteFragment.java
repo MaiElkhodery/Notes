@@ -142,6 +142,7 @@ public class NoteFragment extends Fragment {
                 defaultColor=color;
                 fragmentNoteRoot.setBackgroundColor(color);
                 toolbarNoteRoot.setBackgroundColor(color);
+                background = color;
             }
         });
         colorPicker.show();

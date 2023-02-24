@@ -52,12 +52,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.Holder>{
     public static class Holder extends RecyclerView.ViewHolder {
         TextView noteTitle_TV;
         TextView noteDescription_TV;
-        TextView noteLastEdit_TV;
         public Holder(View view){
             super(view);
             noteTitle_TV=view.findViewById(R.id.noteTitle_textView);
             noteDescription_TV=view.findViewById(R.id.noteDescription_textView);
-            noteLastEdit_TV=view.findViewById(R.id.noteLastEditDate_textView);
         }
 
         public TextView getNoteTitle_TV() {
@@ -68,9 +66,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.Holder>{
             return noteDescription_TV;
         }
 
-        public TextView getNoteLastEdit_TV() {
-            return noteLastEdit_TV;
-        }
     }
     public Note getNote(int position){
         return items_list.get(position);

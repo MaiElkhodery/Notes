@@ -10,12 +10,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import com.example.notes.databinding.SettingsToolbarBinding;
 
 public class SettingsFragment extends Fragment {
 
-    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
     SharedPreferences.Editor editor;
     private boolean nightMode;
     private boolean gridView;
@@ -24,6 +28,7 @@ public class SettingsFragment extends Fragment {
     SwitchCompat switcher1;
     SwitchCompat switcher2;
     private static SetSettingsListener listener;
+    private SettingsToolbarBinding toolbarBinding;
 
     public interface SetSettingsListener{
         void changeLayoutToLinear();
@@ -52,17 +57,17 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         onClickNightMode(view);
         onClickLinearView(view);
+        onSettingsBackClick(view);
     }
 
+
     public void onClickNightMode(View view){
-        sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
         switcher1 = view.findViewById(R.id.switchMode);
         nightMode = sharedPreferences.getBoolean(MODE,false);
         if(nightMode){
@@ -88,7 +93,6 @@ public class SettingsFragment extends Fragment {
         });
     }
     public void onClickLinearView(View view){
-        sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
         gridView = sharedPreferences.getBoolean(VIEW,false);
         if(gridView){
             switcher2.setChecked(true);
@@ -110,5 +114,19 @@ public class SettingsFragment extends Fragment {
                 editor.apply();
             }
         });
+    }
+    public void onSettingsBackClick(View view){
+        AppCompatImageButton back = view.findViewById(R.id.settingsToolbar).findViewById(R.id.settingsBackIcon);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecyclerviewFragment fragment = RecyclerviewFragment.newInstance();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.fragmentContainer,fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
     }
 }

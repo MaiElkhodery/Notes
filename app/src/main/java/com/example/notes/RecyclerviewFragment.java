@@ -107,6 +107,13 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
                 .addToBackStack(null)
                 .commit();
     }
+    @Override
+    public void onSaveButtonClick(String title, int background, String description) {
+        Note note = new Note(title,background,description);
+        note.setId(note_id);
+        database.Dao().addNote(note);
+        Log.d("getId_onSave","ID : "+note_id);
+    }
     //open note
     @Override
     public void onNoteClick(Note note) {
@@ -120,13 +127,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
                 .commit();
     }
 
-    @Override
-    public void onSaveButtonClick(String title, int background, String description) {
-        Note note = new Note(title,background,description);
-        note.setId(note_id);
-        database.Dao().addNote(note);
-        Log.d("getId_onSave","ID : "+note_id);
-    }
+
 
     public void onClickSettings(){
         ImageView settingIcon = toolbarBinding.settingsIcon;
