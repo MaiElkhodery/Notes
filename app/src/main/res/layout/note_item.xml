@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="150dp"
-    android:layout_height="250dp"
+    android:layout_height="230dp"
     android:orientation="vertical"
     android:layout_marginTop="8dp"
-    android:layout_marginStart="16dp"
+    android:layout_marginStart="20dp"
     android:background="@drawable/note_item_background">
 
     <TextView

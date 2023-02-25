@@ -29,10 +29,6 @@ public class NoteFragment extends Fragment {
     String title;
     String description;
     int background;
-    AppCompatImageButton backIcon;
-    AppCompatImageButton changeBackgroundIcon;
-    AppCompatImageButton settingsIcon;
-    AppCompatImageButton saveIcon;
     EditText title_editText;
     EditText description_editText;
     View fragmentNoteRoot;
@@ -142,20 +138,20 @@ public class NoteFragment extends Fragment {
                 defaultColor=color;
                 fragmentNoteRoot.setBackgroundColor(color);
                 toolbarNoteRoot.setBackgroundColor(color);
-                background = color;
+                noteBackground = color;
             }
         });
         colorPicker.show();
     }
     public void onClickSave(){
-        saveIcon = toolbarBinding.saveNoteIcon;
         toolbarBinding.saveNoteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 title = binding.titleEditText.getText().toString();
                 description = binding.descriptionEditText.getText().toString();
-                listener.onSaveButtonClick(title, background, description);
+                listener.onSaveButtonClick(title, noteBackground, description);
             }
+
         });
     }
 }

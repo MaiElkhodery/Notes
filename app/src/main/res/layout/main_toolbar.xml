@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/mainToolbar"
+    android:background="@drawable/toolbar_background"
     style="@style/lightModeBackground">
 
 

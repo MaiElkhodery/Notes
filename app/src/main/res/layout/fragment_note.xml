@@ -31,7 +31,6 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:hint="Title"
-        style="@style/lightModeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -46,7 +45,6 @@
         android:inputType="textMultiLine"
         android:paddingStart="8dp"
         android:textSize="16sp"
-        style="@style/lightModeText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

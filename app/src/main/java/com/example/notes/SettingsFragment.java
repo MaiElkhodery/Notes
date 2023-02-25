@@ -3,6 +3,7 @@ package com.example.notes;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +16,29 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.example.notes.databinding.FragmentSettingsBinding;
 import com.example.notes.databinding.SettingsToolbarBinding;
 
 public class SettingsFragment extends Fragment {
 
-    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
+    SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private boolean nightMode;
     private boolean gridView;
     private static final String MODE ="night_mode";
     private static final String VIEW ="grid_view";
-    SwitchCompat switcher1;
+    public static SwitchCompat switcher1 ;
     SwitchCompat switcher2;
     private static SetSettingsListener listener;
     private SettingsToolbarBinding toolbarBinding;
+    private static NightModeListener nightModeListener ;
+    FragmentSettingsBinding settingsBinding;
 
     public interface SetSettingsListener{
         void changeLayoutToLinear();
         void changeLayoutToGrid();
+    }
+    public interface NightModeListener{
+        void onClickNightMode(SwitchCompat switcher);
     }
 
     public static SettingsFragment newInstance(SetSettingsListener settingsListener) {
@@ -55,44 +61,25 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        settingsBinding = FragmentSettingsBinding.inflate(inflater,container,false);
+        return settingsBinding.getRoot();
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        onClickNightMode(view);
+        onClickNightMode();
         onClickLinearView(view);
-        onSettingsBackClick(view);
+        onSettingsBackClick();
     }
 
 
-    public void onClickNightMode(View view){
-        switcher1 = view.findViewById(R.id.switchMode);
-        nightMode = sharedPreferences.getBoolean(MODE,false);
-        if(nightMode){
-            switcher1.setChecked(true);
-        }
-        switcher1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(nightMode){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean(MODE,false);
-                    switcher1.setChecked(false);
-                }
-                else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean(MODE,true);
-                    switcher1.setChecked(true);
-                }
-                editor.apply();
-            }
-        });
+    public void onClickNightMode(){
+        switcher1 = settingsBinding.switchMode;
+        nightModeListener.onClickNightMode(switcher1);
     }
     public void onClickLinearView(View view){
+         sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
         gridView = sharedPreferences.getBoolean(VIEW,false);
         if(gridView){
             switcher2.setChecked(true);
@@ -115,11 +102,12 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-    public void onSettingsBackClick(View view){
-        AppCompatImageButton back = view.findViewById(R.id.settingsToolbar).findViewById(R.id.settingsBackIcon);
-        back.setOnClickListener(new View.OnClickListener() {
+    public void onSettingsBackClick(){
+        toolbarBinding=settingsBinding.settingsToolbar;
+        toolbarBinding.settingsBackIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("settings-back","done");
                 RecyclerviewFragment fragment = RecyclerviewFragment.newInstance();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction().replace(R.id.fragmentContainer,fragment)
@@ -128,5 +116,11 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+       nightModeListener = (NightModeListener) context;
     }
 }

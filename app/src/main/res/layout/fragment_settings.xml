@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsFragment"
-    style="@style/lightModeBackground"
     android:orientation="vertical">
-
 
     <include
         android:id="@+id/settingsToolbar"
@@ -20,7 +18,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        style="@style/lightModeBackground">
 
         <TextView
             android:id="@+id/nightModeTextView"
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginTop="46dp"
-            style="@style/lightModeText"
+
             android:text="Night Mode"
             android:textSize="20dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,15 +38,14 @@
             style="@style/lightModeText"
             android:layout_width="95dp"
             android:layout_height="18dp"
-            android:layout_marginStart="148dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginStart="96dp"
+            android:layout_marginTop="52dp"
             android:text="off"
             app:layout_constraintStart_toEndOf="@+id/nightModeTextView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/LinearViewTextView"
-            style="@style/lightModeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -62,13 +60,13 @@
             style="@style/lightModeText"
             android:layout_width="95dp"
             android:layout_height="18dp"
-            android:layout_marginStart="168dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginStart="116dp"
+            android:layout_marginTop="32dp"
             android:text="off"
             app:layout_constraintStart_toEndOf="@+id/LinearViewTextView"
             app:layout_constraintTop_toBottomOf="@+id/switchMode" />
 
-<!--        <TextView-->
+        <!--        <TextView-->
 <!--            android:id="@+id/ArabicLangTextView"-->
 <!--            style="@style/lightModeText"-->
 <!--            android:layout_width="wrap_content"-->

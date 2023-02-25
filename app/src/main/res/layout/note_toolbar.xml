@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/noteToolbar"
     android:elevation="4dp"
-    style="@style/lightModeBackground">
+    style="@style/lightModeBackground"
+    android:background="@drawable/toolbar_background">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/optionsIcon"

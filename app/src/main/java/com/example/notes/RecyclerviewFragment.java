@@ -39,6 +39,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Note newNoteAdded;
     private long note_id;
+    boolean clickAdd;
 
 
     public static RecyclerviewFragment newInstance() {
@@ -92,15 +93,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     }
     //add new note
     public void addNote(){
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                newNoteAdded = new Note();
-                database.Dao().addNote(newNoteAdded);
-                note_id = newNoteAdded.getId();
-                Log.d("getId_newNote","ID : "+note_id);
-            }
-        });
+        clickAdd = true;
         NoteFragment noteFragment = NoteFragment.newInstance(this);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,noteFragment)
@@ -110,15 +103,28 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     @Override
     public void onSaveButtonClick(String title, int background, String description) {
         Note note = new Note(title,background,description);
-        note.setId(note_id);
-        database.Dao().addNote(note);
-        Log.d("getId_onSave","ID : "+note_id);
+        if(clickAdd){
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    database.Dao().addNote(note);
+                }
+            });
+            clickAdd=false;
+        }
+        else{
+            note.setId(note_id);
+            database.Dao().addNote(note);
+        }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer,RecyclerviewFragment.newInstance())
+                .addToBackStack(null)
+                .commit();
     }
     //open note
     @Override
     public void onNoteClick(Note note) {
         note_id = note.getId();
-        Log.d("getId_onNoteClick","ID : "+note_id);
         NoteFragment noteFragment = NoteFragment.openFragment(this,note.getTitle(),
                 note.getBackground(),note.getDescription());
         getActivity().getSupportFragmentManager().beginTransaction()
@@ -173,4 +179,5 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
             }
         }).attachToRecyclerView(recyclerView);
     }
+
 }

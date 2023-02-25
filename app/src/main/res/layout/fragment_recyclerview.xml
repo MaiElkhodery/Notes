@@ -35,7 +35,7 @@
       android:layout_marginEnd="52dp"
       android:layout_marginBottom="52dp"
       android:src="@drawable/add"
-      android:backgroundTint="#94B2CC"
+      android:backgroundTint="#B2D0EA"
       android:contentDescription="adding contacts button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
