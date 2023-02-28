@@ -21,24 +21,20 @@ import com.example.notes.databinding.SettingsToolbarBinding;
 
 public class SettingsFragment extends Fragment {
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    private boolean gridView;
     private static final String MODE ="night_mode";
-    private static final String VIEW ="grid_view";
     public static SwitchCompat switcher1 ;
     SwitchCompat switcher2;
     private static SetSettingsListener listener;
     private SettingsToolbarBinding toolbarBinding;
-    private static NightModeListener nightModeListener ;
+    private static SettingsListener settingsListener ;
     FragmentSettingsBinding settingsBinding;
 
     public interface SetSettingsListener{
-        void changeLayoutToLinear();
-        void changeLayoutToGrid();
+        void changeView(SwitchCompat switcher);
     }
-    public interface NightModeListener{
+    public interface SettingsListener{
         void onClickNightMode(SwitchCompat switcher);
+        void onClickSetPassword(SwitchCompat switcher);
     }
 
     public static SettingsFragment newInstance(SetSettingsListener settingsListener) {
@@ -68,39 +64,11 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        onClickNightMode();
-        onClickLinearView(view);
+        settingsListener.onClickNightMode(settingsBinding.switchMode);
+        settingsListener.onClickSetPassword(settingsBinding.switchMode3);
+
+        listener.changeView(settingsBinding.switchMode2);
         onSettingsBackClick();
-    }
-
-
-    public void onClickNightMode(){
-        switcher1 = settingsBinding.switchMode;
-        nightModeListener.onClickNightMode(switcher1);
-    }
-    public void onClickLinearView(View view){
-         sharedPreferences = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
-        gridView = sharedPreferences.getBoolean(VIEW,false);
-        if(gridView){
-            switcher2.setChecked(true);
-        }
-        switcher2 = view.findViewById(R.id.switchMode2);
-        switcher2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(gridView){
-                    listener.changeLayoutToLinear();
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean(VIEW,false);
-                }
-                else {
-                    listener.changeLayoutToGrid();
-                    editor = sharedPreferences.edit();
-                    editor.putBoolean(MODE,true);
-                }
-                editor.apply();
-            }
-        });
     }
     public void onSettingsBackClick(){
         toolbarBinding=settingsBinding.settingsToolbar;
@@ -121,6 +89,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-       nightModeListener = (NightModeListener) context;
+       settingsListener = (SettingsListener) context;
     }
 }

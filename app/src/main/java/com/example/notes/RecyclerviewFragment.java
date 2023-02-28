@@ -1,5 +1,7 @@
 package com.example.notes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -37,9 +40,14 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     private MainToolbarBinding toolbarBinding;
     Database database ;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private Note newNoteAdded;
+
     private long note_id;
     boolean clickAdd;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    private boolean linearLayout;
+    private final String SP_NAME = "view";
+    private static final String VIEW ="linear_layout";
 
 
     public static RecyclerviewFragment newInstance() {
@@ -55,20 +63,23 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
         View view = fragmentBinding.getRoot();
         toolbarBinding = fragmentBinding.mainToolbar;
         database=Database.getINSTANCE(getContext());
+        initRecyclerView(view);
+        ///////////////////////
+        sharedPreferences = getActivity().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        linearLayout = sharedPreferences.getBoolean(VIEW,false);
+        if(linearLayout){
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+        else{
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        }
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initRecyclerView(view);
         updateList();
-        FloatingActionButton addButton = fragmentBinding.addButton;
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addNote();
-            }
-        });
+        addNote();
         onClickSettings();
         deleteNote();
     }
@@ -93,12 +104,18 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     }
     //add new note
     public void addNote(){
-        clickAdd = true;
-        NoteFragment noteFragment = NoteFragment.newInstance(this);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer,noteFragment)
-                .addToBackStack(null)
-                .commit();
+        FloatingActionButton addButton = fragmentBinding.addButton;
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickAdd = true;
+                NoteFragment noteFragment = NoteFragment.newInstance(RecyclerviewFragment.this);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer,noteFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
     @Override
     public void onSaveButtonClick(String title, int background, String description) {
@@ -133,8 +150,6 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
                 .commit();
     }
 
-
-
     public void onClickSettings(){
         ImageView settingIcon = toolbarBinding.settingsIcon;
         settingIcon.setOnClickListener(new View.OnClickListener() {
@@ -147,17 +162,6 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
                         .commit();
             }
         });
-    }
-
-    @Override
-    public void changeLayoutToLinear() {
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-    }
-    @Override
-    public void changeLayoutToGrid() {
-        layoutManager = new GridLayoutManager(getContext(),2);
-        recyclerView.setLayoutManager(layoutManager);
     }
 
     public void deleteNote(){
@@ -180,4 +184,29 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
         }).attachToRecyclerView(recyclerView);
     }
 
+    @Override
+    public void changeView(SwitchCompat switcher) {
+        sharedPreferences = getActivity().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        linearLayout = sharedPreferences.getBoolean(VIEW,false);
+        if(linearLayout){
+            switcher.setChecked(true);
+        }
+        switcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editor = sharedPreferences.edit();
+                if(linearLayout){
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+                    adapter.notifyDataSetChanged();
+                    editor.putBoolean(VIEW,false);
+                }
+                else {
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    adapter.notifyDataSetChanged();
+                    editor.putBoolean(VIEW,true);
+                }
+                editor.apply();
+            }
+        });
+    }
 }
