@@ -3,10 +3,12 @@ package com.example.notes;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -35,25 +37,27 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     public static ArrayList<Note> dataList=new ArrayList<>();
     RecyclerView recyclerView;
     public static NotesAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
     public static FragmentRecyclerviewBinding fragmentBinding;
     private MainToolbarBinding toolbarBinding;
     Database database ;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
-
+    RecyclerView.LayoutManager layoutManager;
     private long note_id;
     boolean clickAdd;
+    private final String SP_NAME = "view";
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private boolean linearLayout;
-    private final String SP_NAME = "view";
     private static final String VIEW ="linear_layout";
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        sharedPreferences=context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+    }
 
     public static RecyclerviewFragment newInstance() {
         RecyclerviewFragment fragment = new RecyclerviewFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
     @Override
@@ -63,34 +67,34 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
         View view = fragmentBinding.getRoot();
         toolbarBinding = fragmentBinding.mainToolbar;
         database=Database.getINSTANCE(getContext());
-        initRecyclerView(view);
-        ///////////////////////
-        sharedPreferences = getActivity().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+
         linearLayout = sharedPreferences.getBoolean(VIEW,false);
-        if(linearLayout){
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        }
-        else{
-            recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        }
+        Log.d("OnCreate_LinearLayout", linearLayout+"");
+        recyclerView= view.findViewById(R.id.notes_recyclerView);
+        initRecyclerView();
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        onClickSettings();
         updateList();
         addNote();
         onClickSettings();
         deleteNote();
     }
 
-    public void initRecyclerView(View view){
-        recyclerView= view.findViewById(R.id.notes_recyclerView);
-        adapter=new NotesAdapter(dataList,this);
-        recyclerView.setAdapter(adapter);
-        layoutManager= new GridLayoutManager(getContext(),2);
+    public void initRecyclerView(){
+        if(linearLayout){
+            layoutManager=new LinearLayoutManager(getContext());
+        }
+        else{
+            layoutManager=new GridLayoutManager(getContext(),2);
+        }
         recyclerView.setLayoutManager(layoutManager);
-
+        adapter=new NotesAdapter(dataList,this,getContext(),layoutManager);
+        recyclerView.setAdapter(adapter);
     }
     public void updateList(){
         database.Dao().getAllNotes().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
@@ -151,10 +155,10 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
     }
 
     public void onClickSettings(){
-        ImageView settingIcon = toolbarBinding.settingsIcon;
-        settingIcon.setOnClickListener(new View.OnClickListener() {
+        toolbarBinding.settingsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("openSetting", "method");
                 SettingsFragment settingsFragment = SettingsFragment.newInstance(RecyclerviewFragment.this);
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer,settingsFragment)
@@ -162,6 +166,7 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
                         .commit();
             }
         });
+
     }
 
     public void deleteNote(){
@@ -186,27 +191,23 @@ public class RecyclerviewFragment extends Fragment implements SettingsFragment.S
 
     @Override
     public void changeView(SwitchCompat switcher) {
-        sharedPreferences = getActivity().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         linearLayout = sharedPreferences.getBoolean(VIEW,false);
         if(linearLayout){
             switcher.setChecked(true);
         }
-        switcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editor = sharedPreferences.edit();
-                if(linearLayout){
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-                    adapter.notifyDataSetChanged();
-                    editor.putBoolean(VIEW,false);
-                }
-                else {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    adapter.notifyDataSetChanged();
-                    editor.putBoolean(VIEW,true);
-                }
-                editor.apply();
+        switcher.setOnClickListener(view -> {
+            editor = sharedPreferences.edit();
+            if(linearLayout){
+                initRecyclerView();
+                adapter.notifyDataSetChanged();
+                editor.putBoolean(VIEW,false);
             }
+            else {
+                initRecyclerView();
+                adapter.notifyDataSetChanged();
+                editor.putBoolean(VIEW,true);
+            }
+            editor.apply();
         });
     }
 }

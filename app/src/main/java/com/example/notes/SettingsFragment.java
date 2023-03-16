@@ -1,7 +1,6 @@
 package com.example.notes;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,9 +20,6 @@ import com.example.notes.databinding.SettingsToolbarBinding;
 
 public class SettingsFragment extends Fragment {
 
-    private static final String MODE ="night_mode";
-    public static SwitchCompat switcher1 ;
-    SwitchCompat switcher2;
     private static SetSettingsListener listener;
     private SettingsToolbarBinding toolbarBinding;
     private static SettingsListener settingsListener ;
@@ -38,10 +34,9 @@ public class SettingsFragment extends Fragment {
     }
 
     public static SettingsFragment newInstance(SetSettingsListener settingsListener) {
+        Log.d("Settings", settingsListener.toString());
         listener = (SetSettingsListener) settingsListener;
         SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -75,12 +70,12 @@ public class SettingsFragment extends Fragment {
         toolbarBinding.settingsBackIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("settings-back","done");
                 RecyclerviewFragment fragment = RecyclerviewFragment.newInstance();
                 getActivity().getSupportFragmentManager()
                         .beginTransaction().replace(R.id.fragmentContainer,fragment)
                         .addToBackStack(null)
                         .commit();
+                Log.d("settings-back","done");
             }
         });
 

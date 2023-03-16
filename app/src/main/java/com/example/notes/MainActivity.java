@@ -4,24 +4,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
 
-import com.example.notes.Database.Database;
-import com.example.notes.databinding.FragmentRecyclerviewBinding;
-import com.example.notes.databinding.FragmentSettingsBinding;
-import com.example.notes.databinding.MainToolbarBinding;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements SettingsFragment.SettingsListener,SetPasswordDialog.SetOnClickListener {
     private RecyclerviewFragment recyclerviewFragment;
-    public static final String RECYCLER_FRAG_TAG = "recyclerview";
     SharedPreferences sharedPreferences ;
     private final String SH_NAME = "modeFile";
     private final String PASSWORD = "password";
@@ -29,28 +18,25 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     SharedPreferences.Editor editor;
     private String MODE ="mode";
     boolean nightMode;
-
+    public static SwitchCompat passwordSwitcher;
+    boolean firstTime = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewNotes();
-        setPassword();
-        nightMode();
-    }
-
-    //open/show recycler view
-    public void viewNotes(){
         recyclerviewFragment = RecyclerviewFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,recyclerviewFragment)
-                .addToBackStack(RECYCLER_FRAG_TAG)
+                .addToBackStack(null)
                 .commit();
+
+        nightMode();
     }
+
     public void nightMode(){
         sharedPreferences = this.getSharedPreferences(SH_NAME,MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean(MODE, false);
-        if(nightMode){
+        if(nightMode ){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
         else {
@@ -60,9 +46,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     public void setPassword(){
         sharedPreferences = getSharedPreferences(SH_NAME,MODE_PRIVATE);
         password = sharedPreferences.getString(PASSWORD,null);
-        if(password != null){
+        Log.d("password", "SetPasswordMethod, "+this.getTaskId());
+        if(password != null && firstTime){
             EnterPasswordDialog dialog = EnterPasswordDialog.newInstance(password);
             dialog.show(getSupportFragmentManager(),null);
+            firstTime = false;
         }
     }
 
@@ -71,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         sharedPreferences = this.getSharedPreferences(SH_NAME,MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean(MODE, false);
         switcher.setChecked(nightMode);
-        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switcher.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            public void onClick(View view) {
                 if(nightMode){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     editor = sharedPreferences.edit();
@@ -89,30 +77,25 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 editor.apply();
             }
         });
-
     }
 
     @Override
     public void onClickSetPassword(SwitchCompat switcher) {
+        passwordSwitcher = switcher;
         sharedPreferences = getSharedPreferences(SH_NAME,MODE_PRIVATE);
         password = sharedPreferences.getString(PASSWORD,null);
         switcher.setChecked(password!=null);
-        switcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(switcher.isChecked()){
-                    SetPasswordDialog dialog = SetPasswordDialog.newInstance();
-                    dialog.show(getSupportFragmentManager(),null);
-                    if(SetPasswordDialog.isBackClicked){
-                        switcher.setChecked(false);
-                    }
+        switcher.setOnClickListener(view -> {
+            if(switcher.isChecked()){
+                Log.d("PassOperate", "Open Pass Dialog");
+                SetPasswordDialog dialog = SetPasswordDialog.newInstance();
+                dialog.show(getSupportFragmentManager(),null);
 
-                }else{
-                    editor = sharedPreferences.edit();
-                    editor.putString(PASSWORD,null);
-                    editor.apply();
-                    password = null;
-                }
+            }else{
+                editor = sharedPreferences.edit();
+                editor.putString(PASSWORD,null);
+                editor.apply();
+                password = null;
             }
         });
     }
@@ -124,4 +107,11 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         editor.putString(PASSWORD,text);
         editor.apply();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setPassword();
+    }
+
 }

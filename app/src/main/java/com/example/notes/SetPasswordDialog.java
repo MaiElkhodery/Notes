@@ -21,7 +21,6 @@ import android.widget.TextView;
 public class SetPasswordDialog extends DialogFragment {
 
     private SetOnClickListener ClickListener;
-    public static Boolean isBackClicked = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -75,7 +74,7 @@ public class SetPasswordDialog extends DialogFragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isBackClicked = true;
+                MainActivity.passwordSwitcher.setChecked(false);
                 dismiss();
             }
         });
