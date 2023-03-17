@@ -1,7 +1,6 @@
 package com.example.notes;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
-public class EnterPasswordDialog extends DialogFragment {
+public class EnterPasswordDialog extends Fragment {
 
     private  static final String PASSWORD ="password";
     private static String saved_password;
     EditText password_editText;
     boolean confirmIsClicked = false;
-    public static EnterPasswordDialog newInstance(String password) {
+    static OnConfirmListener confirmListener;
+    public static EnterPasswordDialog newInstance(String password,OnConfirmListener listener) {
+        confirmListener = listener;
         EnterPasswordDialog fragment = new EnterPasswordDialog();
         Bundle args = new Bundle();
         saved_password = password;
@@ -29,17 +30,15 @@ public class EnterPasswordDialog extends DialogFragment {
         return fragment;
     }
 
+    public interface OnConfirmListener{
+        void onClickConfirm();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().setFinishOnTouchOutside(false);
 
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-        if (this.getDialog() != null && this.getDialog().getWindow() != null) {
-            this.getDialog().getWindow().setLayout((9 * width) / 10, (9 * height) / 10);
-        }
+        requireActivity().setFinishOnTouchOutside(false);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class EnterPasswordDialog extends DialogFragment {
             Log.d("getPass", getArguments().getString(PASSWORD));
             if(entered_password.equals(getArguments().getString(PASSWORD))){
                 confirmIsClicked = true;
-                dismiss();
+                confirmListener.onClickConfirm();
             }
             else{
                 warning_msg.setText("That is not right");

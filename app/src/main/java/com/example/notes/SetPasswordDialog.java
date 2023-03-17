@@ -2,6 +2,7 @@ package com.example.notes;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,11 @@ public class SetPasswordDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        if (this.getDialog() != null && this.getDialog().getWindow() != null) {
+            this.getDialog().getWindow().setLayout((9 * width) / 10, (9 * height) / 10);
         }
     }
 

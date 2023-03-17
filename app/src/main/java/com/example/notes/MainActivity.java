@@ -1,5 +1,6 @@
 package com.example.notes;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,13 +20,13 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     private final String MODE ="mode";
     boolean nightMode;
     public static SwitchCompat passwordSwitcher;
-    boolean firstTime = true;
+    boolean nightModeIsClicked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setPassword();
         nightMode();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerviewFragment = RecyclerviewFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,recyclerviewFragment)
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
     }
 
     public void nightMode(){
-        sharedPreferences = this.getSharedPreferences(SH_NAME,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(SH_NAME,MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean(MODE, false);
         if(nightMode ){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -43,16 +44,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
-    public void setPassword(){
-        sharedPreferences = getSharedPreferences(SH_NAME,MODE_PRIVATE);
-        password = sharedPreferences.getString(PASSWORD,null);
-        Log.d("password", "SetPasswordMethod, "+this.getTaskId());
-        if(password != null && firstTime){
-            EnterPasswordDialog dialog = EnterPasswordDialog.newInstance(password);
-            dialog.show(getSupportFragmentManager(),null);
-            firstTime = false;
-        }
-    }
+
 
     @Override
     public void onClickNightMode(SwitchCompat switcher) {
@@ -60,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
         nightMode = sharedPreferences.getBoolean(MODE, false);
         switcher.setChecked(nightMode);
         switcher.setOnClickListener(view -> {
+            nightModeIsClicked = true;
             if(nightMode){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 editor = sharedPreferences.edit();
@@ -73,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SettingsFragment.
                 switcher.setChecked(true);
             }
             editor.apply();
+            recreate();
         });
     }
 
