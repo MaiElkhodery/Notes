@@ -2,7 +2,9 @@ package com.example.notes;
 
 
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -13,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notes.Database.Note;
@@ -22,19 +24,23 @@ import java.util.ArrayList;
 
 public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int VIEW_TYPE_LINEAR = 1;
-    private static final int VIEW_TYPE_GRID = 2;
     private ArrayList<Note> items_list;
     private ItemClickListener clickListener;
     Drawable background;
     Context aContext;
     RecyclerView.LayoutManager layoutManager;
+    private final String SP_NAME = "view";
+    SharedPreferences sharedPreferences;
+    private static final String VIEW = "linear_layout";
+    private boolean linearLayout;
 
     public NotesAdapter(ArrayList<Note> data, ItemClickListener itemClickListener, Context context, RecyclerView.LayoutManager layoutManager) {
         this.items_list = data;
         this.clickListener = itemClickListener;
         aContext = context;
         this.layoutManager=layoutManager;
+        sharedPreferences = aContext.getSharedPreferences(SP_NAME, 0);
+        linearLayout =  sharedPreferences.getBoolean(VIEW, false);
     }
 
     public interface ItemClickListener {
@@ -44,7 +50,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(aContext);
-        if (layoutManager instanceof LinearLayoutManager) {
+        if (linearLayout) {
             Log.d("LinearLayout", "True");
             View itemView = inflater.inflate(R.layout.linear_layout_notes, parent, false);
             return new LinearViewHolder(itemView);
@@ -60,7 +66,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Note data = items_list.get(position);
         setBackground(holder, data);
         holder.itemView.setOnClickListener(view -> clickListener.onNoteClick(data));
-        if (holder.getItemViewType() == VIEW_TYPE_LINEAR) {
+        if (linearLayout) {
             ((LinearViewHolder) holder).bind(data);
         } else {
             ((GridViewHolder) holder).bind(data);
@@ -68,22 +74,9 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
     public void setBackground(RecyclerView.ViewHolder holder, Note currentNote) {
         background = holder.itemView.getBackground();
-        if (background instanceof ShapeDrawable) {
-            ((ShapeDrawable) background).getPaint().setColor(currentNote.getBackground());
-        } else if (background instanceof GradientDrawable) {
-            ((GradientDrawable) background).setColor(currentNote.getBackground());
-        } else if (background instanceof ColorDrawable) {
-            ((ColorDrawable) background).setColor(currentNote.getBackground());
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (aContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            return VIEW_TYPE_LINEAR;
-        } else {
-            return VIEW_TYPE_GRID;
-        }
+        Drawable drawable = AppCompatResources.getDrawable(aContext, R.drawable.note_item_background);
+        drawable.setColorFilter(currentNote.getBackground(), PorterDuff.Mode.SRC_IN);
+        holder.itemView.setBackground(drawable);
     }
 
     @Override
@@ -106,7 +99,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void bind(Note data) {
             noteTitle_TV.setText(data.getTitle());
             noteDescription_TV.setText(data.getDescription());
-            itemView.setBackgroundColor(data.getBackground());
+            //itemView.setBackgroundColor(data.getBackground());
         }
     }
 
@@ -124,7 +117,8 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void bind(Note data) {
             noteTitle_TV.setText(data.getTitle());
             noteDescription_TV.setText(data.getDescription());
-            itemView.setBackgroundColor(data.getBackground());
+            //itemView.setBackgroundColor(data.getBackground());
+
         }
     }
     public Note getNote(int position) {

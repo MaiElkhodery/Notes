@@ -1,26 +1,25 @@
 package com.example.notes;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.room.PrimaryKey;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 public class EnterPasswordDialog extends DialogFragment {
 
     private  static final String PASSWORD ="password";
     private static String saved_password;
+    EditText password_editText;
+    boolean confirmIsClicked = false;
     public static EnterPasswordDialog newInstance(String password) {
         EnterPasswordDialog fragment = new EnterPasswordDialog();
         Bundle args = new Bundle();
@@ -33,7 +32,13 @@ public class EnterPasswordDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        requireActivity().setFinishOnTouchOutside(false);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        if (this.getDialog() != null && this.getDialog().getWindow() != null) {
+            this.getDialog().getWindow().setLayout((9 * width) / 10, (9 * height) / 10);
         }
     }
 
@@ -48,20 +53,19 @@ public class EnterPasswordDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         AppCompatButton confirmButton = view.findViewById(R.id.confirmButton);
-        EditText password_editText = view.findViewById(R.id.editTextConfirmPassword);
+        password_editText = view.findViewById(R.id.editTextConfirmPassword);
         TextView warning_msg = view.findViewById(R.id.warningTextView);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String entered_password = password_editText.getText().toString();
-                Log.d("getPass", getArguments().getString(PASSWORD));
-                if(entered_password.equals(getArguments().getString(PASSWORD))){
-                    dismiss();
-                }
-                else{
-                    warning_msg.setText("That is not right");
-                }
+        confirmButton.setOnClickListener(view1 -> {
+            String entered_password = password_editText.getText().toString();
+            Log.d("getPass", getArguments().getString(PASSWORD));
+            if(entered_password.equals(getArguments().getString(PASSWORD))){
+                confirmIsClicked = true;
+                dismiss();
+            }
+            else{
+                warning_msg.setText("That is not right");
             }
         });
     }
+
 }

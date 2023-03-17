@@ -21,27 +21,27 @@
         android:layout_height="match_parent"
         style="@style/lightModeBackground">
 
-        <TextView
-            android:id="@+id/nightModeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="46dp"
+            <TextView
+                android:id="@+id/nightModeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="46dp"
+                android:text="Night Mode"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            android:text="Night Mode"
-            android:textSize="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchMode"
-            style="@style/lightModeText"
-            android:layout_width="95dp"
-            android:layout_height="18dp"
-            android:layout_marginStart="96dp"
-            android:layout_marginTop="52dp"
-            app:layout_constraintStart_toEndOf="@+id/nightModeTextView"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchMode"
+                style="@style/lightModeText"
+                android:layout_width="95dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="52dp"
+                app:layout_constraintStart_toEndOf="@+id/nightModeTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/LinearViewTextView"
@@ -50,6 +50,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="40dp"
             android:text="Linear Layout"
+            android:textStyle="bold"
             android:textSize="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nightModeTextView" />
@@ -71,6 +72,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="40dp"
             android:text="Set Password"
+            android:textStyle="bold"
             android:textSize="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/LinearViewTextView" />

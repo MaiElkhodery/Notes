@@ -9,15 +9,10 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 
 import com.example.notes.databinding.FragmentNoteBinding;
 import com.example.notes.databinding.NoteToolbarBinding;
-
-import java.util.Date;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -28,7 +23,6 @@ public class NoteFragment extends Fragment {
     private static SetNoteFragmentListener listener;
     String title;
     String description;
-    int background;
     EditText title_editText;
     EditText description_editText;
     View fragmentNoteRoot;
@@ -37,7 +31,6 @@ public class NoteFragment extends Fragment {
 
 
     private static final String NOTE_TITLE ="title";
-    private static final String NOTE_DATE ="date";
     private static final String NOTE_DESCRIPTION ="description";
     private static final String NOTE_BACKGROUND ="background";
 
@@ -51,8 +44,7 @@ public class NoteFragment extends Fragment {
 
     public static NoteFragment newInstance(SetNoteFragmentListener clickListener) {
         listener=clickListener;
-        NoteFragment fragment = new NoteFragment();
-        return fragment;
+        return new NoteFragment();
     }
     public static NoteFragment openFragment(SetNoteFragmentListener clickListener,
                                             String titleParams,int backgroundParams, String descriptionParams ) {
@@ -101,28 +93,22 @@ public class NoteFragment extends Fragment {
     }
 
     public void onClickBack(){
-        toolbarBinding.backIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        toolbarBinding.backIcon.setOnClickListener(view -> {
 
-                Log.d("back","onclickBack");
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer,RecyclerviewFragment.newInstance())
-                        .addToBackStack(null)
-                        .commit();
-            }
+            Log.d("back","onclickBack");
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer,RecyclerviewFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
         });
     }
     public void onClickColorPicker(){
-        toolbarBinding.backgroundIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("color","change color clicked");
-                fragmentNoteRoot = binding.getRoot();
-                toolbarNoteRoot = binding.getRoot();
-                defaultColor = 0;
-                openColorPicker();
-            }
+        toolbarBinding.backgroundIcon.setOnClickListener(view -> {
+            Log.d("color","change color clicked");
+            fragmentNoteRoot = binding.getRoot();
+            toolbarNoteRoot = binding.getRoot();
+            defaultColor = 0;
+            openColorPicker();
         });
     }
     public void openColorPicker(){
@@ -144,14 +130,10 @@ public class NoteFragment extends Fragment {
         colorPicker.show();
     }
     public void onClickSave(){
-        toolbarBinding.saveNoteIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                title = binding.titleEditText.getText().toString();
-                description = binding.descriptionEditText.getText().toString();
-                listener.onSaveButtonClick(title, noteBackground, description);
-            }
-
+        toolbarBinding.saveNoteIcon.setOnClickListener(view -> {
+            title = binding.titleEditText.getText().toString();
+            description = binding.descriptionEditText.getText().toString();
+            listener.onSaveButtonClick(title, noteBackground, description);
         });
     }
 }

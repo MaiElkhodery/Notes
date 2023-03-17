@@ -2,20 +2,15 @@ package com.example.notes;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 
 public class SetPasswordDialog extends DialogFragment {
@@ -63,20 +58,14 @@ public class SetPasswordDialog extends DialogFragment {
         AppCompatButton backButton = view.findViewById(R.id.backButton);
         EditText password_editText = view.findViewById(R.id.editTextPassword);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        saveButton.setOnClickListener(view12 -> {
 
-                ClickListener.onClickSave(password_editText.getText().toString());
-                dismiss();
-            }
+            ClickListener.onClickSave(password_editText.getText().toString());
+            dismiss();
         });
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.passwordSwitcher.setChecked(false);
-                dismiss();
-            }
+        backButton.setOnClickListener(view1 -> {
+            MainActivity.passwordSwitcher.setChecked(false);
+            dismiss();
         });
     }
     public interface SetOnClickListener{
